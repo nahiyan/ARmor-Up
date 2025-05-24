@@ -858,7 +858,7 @@ MonoBehaviour:
   _scanRange: 1.5
   _layerMask:
     serializedVersion: 2
-    m_Bits: 1073742079
+    m_Bits: 1073741855
   _visualise: 1
 --- !u!4 &1388206613
 Transform:

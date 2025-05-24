@@ -43,6 +43,7 @@ public class Player : MonoBehaviour
     // Input controls
     InputAction attackAction, moveAction, jumpAction;
 
+    // TODO: Use Start instead of Awake
     void Awake()
     {
         charController = GetComponent<CharacterController>();

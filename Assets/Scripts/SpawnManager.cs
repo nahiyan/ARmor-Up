@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Assertions;
 using Unity.XR.CoreUtils;
 using UnityEngine.EventSystems;
+using Niantic.Lightship.AR.NavigationMesh;
 
 public class SpawnManager : MonoBehaviour
 {
@@ -60,10 +61,12 @@ public class SpawnManager : MonoBehaviour
             else if (enemy == null)
             {
                 enemy = Instantiate(enemyPrefab);
-                enemy.transform.position = hit.point;
+                enemy.transform.position = hit.point + new Vector3(0, 8f, 0);
+                enemy.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 Assert.IsNotNull(player, "Player object null");
                 enemy.player = player;
-                enemy.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                enemy.navmesh = FindFirstObjectByType<LightshipNavMeshManager>().LightshipNavMesh;
+                enemy.GetComponent<Rigidbody>().useGravity = true;
             }
         }
 
