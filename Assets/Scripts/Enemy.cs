@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Niantic.Lightship.AR.NavigationMesh;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.Assertions;
+using static Niantic.Lightship.AR.NavigationMesh.LightshipNavMeshAgent;
 
 public class Enemy : MonoBehaviour
 {
 
-    NavMeshAgent agent;
+    public LightshipNavMesh navmesh;
+    private LightshipNavMeshAgent agent;
     Animator anim;
     // SoundManager soundMan;
     // AnimatorEventsEn animEv;
@@ -16,9 +17,6 @@ public class Enemy : MonoBehaviour
         IDLE, PATROL, CHASE, MELEEATTACK, HIT
     }
     public STATE currState = STATE.IDLE;
-
-    public List<Transform> patrolPoints = new();
-    int curPatrolIndex = -1; //The point of the patrol points where the enemy goes
 
     private float waitTimer = 0;
     public float attackTime = 1.0f; //Time between attacks
@@ -34,20 +32,32 @@ public class Enemy : MonoBehaviour
     private CapsuleCollider coll;
     private int hp = 100;
 
-    void Awake()
+    void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
-        anim = GetComponent<Animator>();
-        // animEv = this.GetComponentInChildren<AnimatorEventsEn>();
-        // soundMan = GetComponent<SoundManager>();
-        coll = GetComponent<CapsuleCollider>();
+        try
+        {
+            agent = GetComponent<LightshipNavMeshAgent>();
+            anim = GetComponent<Animator>();
+            // animEv = this.GetComponentInChildren<AnimatorEventsEn>();
+            // soundMan = GetComponent<SoundManager>();
+            coll = GetComponent<CapsuleCollider>();
 
-        Assert.IsNotNull(agent, "Navmesh Agent null");
-        Assert.IsNotNull(anim, "Animator null");
-        Assert.IsNotNull(coll, "Collision null");
+            Assert.IsNotNull(agent, "Navmesh Agent null");
+            Assert.IsNotNull(anim, "Animator null");
+            Assert.IsNotNull(coll, "Collision null");
+            Assert.IsNotNull(navmesh, "Navmesh null");
 
-        if (patrolPoints.Count != 0) // Id there is patrol points
-            ChangeState(STATE.PATROL);
+            // TODO: Patrol by default
+            if (navmesh.IsOnNavMesh(transform.position, 1))
+            {
+                Debug.Log("Patrolling!");
+                ChangeState(STATE.PATROL);
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"Exception in Enemy.Start: {ex}\n{ex.StackTrace}");
+        }
     }
 
     void Update()
@@ -65,14 +75,12 @@ public class Enemy : MonoBehaviour
                 }
                 break;
             case STATE.PATROL:
-                if (agent.remainingDistance < 1)
+                if (agent.State == AgentNavigationState.Idle)
                 {
-                    if (curPatrolIndex >= patrolPoints.Count - 1)
-                        curPatrolIndex = 0;
-                    else
-                        curPatrolIndex++;
-                    agent.SetDestination(patrolPoints[curPatrolIndex].transform.position);
+                    navmesh.FindRandomPosition(transform.position, 30f, out Vector3 randomPos);
+                    agent.SetDestination(randomPos);
                 }
+
 
                 if (CanSeePlayer())
                 {
@@ -81,17 +89,18 @@ public class Enemy : MonoBehaviour
                 break;
             case STATE.CHASE:
                 agent.SetDestination(player.transform.position);
-                if (agent.hasPath)
+                // TODO: Has path?
+                // if (agent.hasPath)
+                // {
+                if (CanAttackPlayer())
                 {
-                    if (CanAttackPlayer())
-                    {
-                        ChangeState(STATE.MELEEATTACK);
-                    }
-                    else if (CanStopChase())
-                    {
-                        ChangeState(STATE.PATROL);
-                    }
+                    ChangeState(STATE.MELEEATTACK);
                 }
+                else if (CanStopChase())
+                {
+                    ChangeState(STATE.PATROL);
+                }
+                // }
                 break;
             case STATE.MELEEATTACK:
                 LookPlayer(2.0f);
@@ -129,23 +138,23 @@ public class Enemy : MonoBehaviour
 
     public bool CanSeePlayer()
     {
-        Vector3 direction = player.transform.position - transform.position;
-        float angle = Vector3.Angle(direction, transform.forward);
+        // Vector3 direction = player.transform.position - transform.position;
+        // float angle = Vector3.Angle(direction, transform.forward);
 
-        if (direction.magnitude < visDist && angle < visAngle)
-        {
-            return true;
-        }
+        // if (direction.magnitude < visDist && angle < visAngle)
+        // {
+        //     return true;
+        // }
         return false;
     }
 
     public bool CanAttackPlayer()
     {
-        Vector3 direction = player.transform.position - transform.position;
-        if (direction.magnitude < meleeDist)
-        {
-            return true;
-        }
+        // Vector3 direction = player.transform.position - transform.position;
+        // if (direction.magnitude < meleeDist)
+        // {
+        //     return true;
+        // }
         return false;
     }
 
@@ -187,38 +196,44 @@ public class Enemy : MonoBehaviour
                 anim.SetTrigger("isIdle");
                 break;
             case STATE.PATROL:
-                agent.speed = 2;
-                agent.isStopped = false;
+                navmesh.FindRandomPosition(transform.position, 30f, out Vector3 randomPos);
+                agent.SetDestination(randomPos);
 
-                float lastDist = Mathf.Infinity;
-                for (int i = 0; i < patrolPoints.Count; i++)
-                {
-                    Transform patrolPoint = patrolPoints[i];
-                    Assert.IsNotNull(patrolPoint);
-                    float distance = Vector3.Distance(transform.position, patrolPoint.position);
-                    if (distance < lastDist)
-                    {
-                        curPatrolIndex = i - 1; //Because in the update it will be added one
-                        lastDist = distance;
-                    }
-                }
+                // agent.speed = 2;
+                // agent.isStopped = false;
+
+                // float lastDist = Mathf.Infinity;
+                // for (int i = 0; i < patrolPoints.Count; i++)
+                // {
+                //     Transform patrolPoint = patrolPoints[i];
+                //     Assert.IsNotNull(patrolPoint);
+                //     float distance = Vector3.Distance(transform.position, patrolPoint.position);
+                //     if (distance < lastDist)
+                //     {
+                //         curPatrolIndex = i - 1; //Because in the update it will be added one
+                //         lastDist = distance;
+                //     }
+                // }
                 anim.SetTrigger("isPatrolling");
                 break;
             case STATE.CHASE:
-                agent.speed = 3;
-                agent.isStopped = false;
+                // TODO: Chase
+                // agent.speed = 3;
+                // agent.isStopped = false;
                 anim.SetTrigger("isChasing");
                 break;
             case STATE.MELEEATTACK:
-                anim.SetTrigger("isMeleeAttacking");
-                agent.isStopped = true;
+                // TODO: Attack
+                // agent.isStopped = true;
                 waitTimer = 0;
                 // animEv.isAttacking = true;
+                anim.SetTrigger("isMeleeAttacking");
                 break;
             case STATE.HIT:
-                anim.SetTrigger("isHited");
-                agent.isStopped = true;
+                // TODO: Hit
+                // agent.isStopped = true;
                 waitTimer = 0;
+                anim.SetTrigger("isHited");
                 break;
         }
 
@@ -230,7 +245,7 @@ public class Enemy : MonoBehaviour
         if (!isInvincible && player.IsAttacking())
         {
             isInvincible = true;
-            // ChangeState(STATE.HIT);
+            ChangeState(STATE.HIT);
             // soundMan.PlaySound("Hit");
             GameObject dmgText = Instantiate(damageTextPrefab, damageTextPos.position, Quaternion.identity);
             dmgText.GetComponent<DamagePopup>().SetUp(dmgInfo.dmgValue + Random.Range(-10, 10), dmgInfo.textColor);
@@ -238,7 +253,9 @@ public class Enemy : MonoBehaviour
             hp -= dmgInfo.dmgValue;
             if (hp <= 0)
             {
-                agent.isStopped = true;
+                // TODO: Agent stopped
+                // agent.isStopped = true;
+                agent.StopMoving();
                 anim.Play("Die");
 
                 Destroy(gameObject, 2f);
