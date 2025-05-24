@@ -816,14 +816,13 @@ GameObject:
   - component: {fileID: 1388206613}
   - component: {fileID: 1388206612}
   - component: {fileID: 1388206611}
-  - component: {fileID: 1388206614}
   m_Layer: 0
   m_Name: ARNavigationMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1388206611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -859,7 +858,7 @@ MonoBehaviour:
   _scanRange: 1.5
   _layerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1073742079
   _visualise: 1
 --- !u!4 &1388206613
 Transform:
@@ -876,18 +875,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1388206614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1388206610}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e6904c3fc448454fb65720800ab0648, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1495864424
 GameObject:
   m_ObjectHideFlags: 0
@@ -1082,7 +1069,7 @@ MonoBehaviour:
   _targetFrameRate: 20
   _fuseKeyframesOnly: 0
   _maximumIntegrationDistance: 5
-  _voxelSize: 0.04
+  _voxelSize: 0.07
   _enableDistanceBasedVolumetricCleanup: 1
   _meshBlockSize: 1.4
   _meshCullingDistance: 0

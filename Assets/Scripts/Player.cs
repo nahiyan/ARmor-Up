@@ -68,7 +68,8 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(transform.position.y);
+        // Debug.Log(transform.position);
+
         if (charController.isGrounded)
         {
             if (!wasGrounded) //If it is the frame when player touches the ground
@@ -164,7 +165,8 @@ public class Player : MonoBehaviour
             if (moveDirection.magnitude > 0) //Fixes the problem when there is no movement
             {
                 //To rotate the controller when moving and position it correctly relative to the camera
-                charController.transform.rotation = new Quaternion(charController.transform.rotation.x, cam.transform.rotation.y, charController.transform.rotation.z, cam.transform.rotation.w);
+                if (cam != null)
+                    charController.transform.rotation = new Quaternion(charController.transform.rotation.x, cam.transform.rotation.y, charController.transform.rotation.z, cam.transform.rotation.w);
 
                 //Smoothly rotate the character in the xz plane towards the direction of movement
                 Vector3 targetActPosition = new Vector3(movIndicator.transform.position.x, childPlayer.transform.position.y, movIndicator.transform.position.z);
@@ -214,7 +216,8 @@ public class Player : MonoBehaviour
                 if (moveDirectionTemp.magnitude > 0) //Fixes the problem when there is no movement
                 {
                     //To rotate the controller when moving and position it correctly relative to the camera
-                    charController.transform.rotation = new Quaternion(charController.transform.rotation.x, cam.transform.rotation.y, charController.transform.rotation.z, cam.transform.rotation.w);
+                    if (cam != null)
+                        charController.transform.rotation = new Quaternion(charController.transform.rotation.x, cam.transform.rotation.y, charController.transform.rotation.z, cam.transform.rotation.w);
 
                     //Smoothly rotate the character in the xz plane towards the direction of movement
                     Vector3 targetActPosition = new Vector3(movIndicator.transform.position.x, childPlayer.transform.position.y, movIndicator.transform.position.z);

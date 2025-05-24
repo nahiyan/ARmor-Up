@@ -47,19 +47,21 @@ public class SpawnManager : MonoBehaviour
             if (player == null)
             {
                 player = Instantiate(playerPrefab);
-                player.transform.position = hit.point;
+                player.transform.position = hit.point + new Vector3(0, 3f, 0);
                 // player.GetComponent<Player>().cam = camera;
                 player.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 player.speed *= 0.1f;
+                player.jumpSpeed = 0.5f;
+                player.GetComponent<CharacterController>().enabled = true;
             }
-            else if (enemy == null)
-            {
-                enemy = Instantiate(enemyPrefab);
-                enemy.transform.position = hit.point;
-                Assert.IsNotNull(player, "Player object null");
-                enemy.player = player;
-                enemy.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-            }
+            // else if (enemy == null)
+            // {
+            //     enemy = Instantiate(enemyPrefab);
+            //     enemy.transform.position = hit.point;
+            //     Assert.IsNotNull(player, "Player object null");
+            //     enemy.player = player;
+            //     enemy.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            // }
         }
 
         // if (raycastManager.Raycast(touchVector, hits, TrackableType.PlaneWithinPolygon))

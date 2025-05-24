@@ -74,7 +74,6 @@ GameObject:
   - component: {fileID: 6414836258071422903}
   - component: {fileID: 1336816059449506434}
   - component: {fileID: 8715962297256761393}
-  - component: {fileID: 8516511119484547113}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -138,7 +137,7 @@ CharacterController:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Height: 1.7
   m_Radius: 0.5
@@ -159,8 +158,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 785aefe177ffda34b936a99187cc56a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  charCont: {fileID: 0}
-  anim: {fileID: 0}
+  charController: {fileID: 0}
+  animator: {fileID: 0}
   childPlayer: {fileID: 4638103295196483530}
   cam: {fileID: 0}
   movIndicator: {fileID: 4882590223259816288}
@@ -171,22 +170,6 @@ MonoBehaviour:
   maxDashTime: 0.25
   dashSpeed: 20
   canMove: 1
---- !u!114 &8516511119484547113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5476678453246601779}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa9c6c34ba7214d98a185db26b656d1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  walkingSpeed: 3
-  jumpDistance: 1
-  jumpPenalty: 2
-  pathFindingBehaviour: 2
 --- !u!1001 &3599921533473922588
 PrefabInstance:
   m_ObjectHideFlags: 0
