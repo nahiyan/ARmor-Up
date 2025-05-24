@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Assertions;
 using Unity.XR.CoreUtils;
+using UnityEngine.EventSystems;
 
 public class SpawnManager : MonoBehaviour
 {
@@ -34,7 +35,9 @@ public class SpawnManager : MonoBehaviour
 
         bool touched = clickAction.WasPerformedThisFrame();
         Vector2 touch = clickAction.ReadValue<Vector2>();
-        if (!touched)
+        bool isOverUi = EventSystem.current.IsPointerOverGameObject();
+
+        if (!touched || isOverUi)
             return;
 
         if (player != null && enemy != null)
@@ -54,14 +57,14 @@ public class SpawnManager : MonoBehaviour
                 player.jumpSpeed = 0.5f;
                 player.GetComponent<CharacterController>().enabled = true;
             }
-            // else if (enemy == null)
-            // {
-            //     enemy = Instantiate(enemyPrefab);
-            //     enemy.transform.position = hit.point;
-            //     Assert.IsNotNull(player, "Player object null");
-            //     enemy.player = player;
-            //     enemy.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-            // }
+            else if (enemy == null)
+            {
+                enemy = Instantiate(enemyPrefab);
+                enemy.transform.position = hit.point;
+                Assert.IsNotNull(player, "Player object null");
+                enemy.player = player;
+                enemy.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            }
         }
 
         // if (raycastManager.Raycast(touchVector, hits, TrackableType.PlaneWithinPolygon))
