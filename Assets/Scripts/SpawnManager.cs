@@ -55,7 +55,7 @@ public class SpawnManager : MonoBehaviour
                 // player.GetComponent<Player>().cam = camera;
                 player.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 player.speed *= 0.1f;
-                player.jumpSpeed = 0.5f;
+                player.jumpSpeed = 5f;
                 player.GetComponent<CharacterController>().enabled = true;
             }
             else if (enemy == null)
