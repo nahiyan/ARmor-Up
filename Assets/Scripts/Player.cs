@@ -4,8 +4,10 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [HideInInspector] public CharacterController charCont;
-    [HideInInspector] public Animator anim;
+    [HideInInspector] public CharacterController charController;
+    // private LightshipNavMeshAgent agent;
+    // private LightshipNavMesh navMesh;
+    [HideInInspector] public Animator animator;
     public GameObject childPlayer;
     public Camera cam;
     public GameObject movIndicator; //Where is the character moving to
@@ -28,7 +30,7 @@ public class Player : MonoBehaviour
     private float currentDashTime;
     public float dashSpeed = 20; //Dash speed of the player
     private Vector3 dashDir;
-    private bool canDash = true;
+    // private bool canDash = true;
 
     private Vector3 moveDirection = Vector3.zero;
 
@@ -43,11 +45,15 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-        charCont = GetComponent<CharacterController>();
+        charController = GetComponent<CharacterController>();
+        Assert.IsNotNull(charController);
         // soundMan = GetComponent<SoundManager>();
-        anim = GetComponentInChildren<Animator>();
+        animator = GetComponentInChildren<Animator>();
+        Assert.IsNotNull(animator);
+        // agent = GetComponent<LightshipNavMeshAgent>();
         currentDashTime = maxDashTime;
-        distToGround = charCont.bounds.extents.y;
+        distToGround = charController.bounds.extents.y;
+        // navMesh = GameObject.FindFirstObjectByType<ARMeshManager>();
 
         attackAction = InputSystem.actions.FindAction("Attack");
         moveAction = InputSystem.actions.FindAction("Move");
@@ -56,42 +62,45 @@ public class Player : MonoBehaviour
         Assert.IsNotNull(attackAction);
         Assert.IsNotNull(moveAction);
         Assert.IsNotNull(jumpAction);
+
+        Debug.Log("Played spawned.");
     }
 
     void Update()
     {
-        if (charCont.isGrounded)
+        Debug.Log(transform.position.y);
+        if (charController.isGrounded)
         {
             if (!wasGrounded) //If it is the frame when player touches the ground
             {
                 canJump = true;
-                anim.SetBool("Jump", false);
+                animator.SetBool("Jump", false);
                 if (fallTime > 0.2f)
                 {
                     // soundMan.PlaySound("Land");
                     if (!hit)
-                        anim.CrossFade("FallingEnd", 0.1f);
+                        animator.CrossFade("FallingEnd", 0.1f);
                 }
                 fallTime = 0f;
             }
         }
         else
         {
-            anim.SetFloat("SpeedY", charCont.velocity.y);
+            animator.SetFloat("SpeedY", charController.velocity.y);
             if (wasGrounded && canJump) //If it is the first frame of falling
             {
                 if (DistToGround() > 0.3f) //If the ground is far enough
                 {
                     moveDirection.y = 0f;
                     wasGrounded = false;
-                    anim.SetBool("Jump", true); //Needed for activate the jump state if character falls
-                    anim.CrossFade("Falling", 0.2f);
+                    animator.SetBool("Jump", true); //Needed for activate the jump state if character falls
+                    animator.CrossFade("Falling", 0.2f);
                 }
             }
-            if (charCont.velocity.y < 0) //If player is falling down
+            if (charController.velocity.y < 0) //If player is falling down
                 fallTime += Time.deltaTime;
         }
-        wasGrounded = charCont.isGrounded;
+        wasGrounded = charController.isGrounded;
 
         if (!canMove)
         {
@@ -100,28 +109,28 @@ public class Player : MonoBehaviour
                 moveDirection.y -= gravity * Time.deltaTime;
                 Vector3 impactGrav = new Vector3(impact.x, impact.y + moveDirection.y, impact.z); //Adds gravity to the impact force
                                                                                                   // apply the impact force:
-                if (impact.magnitude > 0.2f || !charCont.isGrounded) charCont.Move(impactGrav * Time.deltaTime);
+                if (impact.magnitude > 0.2f || !charController.isGrounded) charController.Move(impactGrav * Time.deltaTime);
                 // consumes the impact energy each cycle:
                 impact = Vector3.Lerp(impact, Vector3.zero, 5 * Time.deltaTime);
 
-                if (charCont.isGrounded && impact.magnitude <= 0.2f)
+                if (charController.isGrounded && impact.magnitude <= 0.2f)
                 {
                     hit = false;
                     canMove = true;
-                    anim.Play("Idle"); //To unlock the animation in some weird cases
+                    animator.Play("Idle"); //To unlock the animation in some weird cases
                 }
             }
             return;
         }
 
-        if (charCont.isGrounded)
+        if (charController.isGrounded)
         {
             Vector2 moveVector = moveAction.ReadValue<Vector2>();
             moveDirection = new Vector3(moveVector.x, 0, moveVector.y);
             if (moveDirection.magnitude < 0.1f) //Because if velocity is minor than 0.1 the animator dont play the correct animation
                 moveDirection = Vector3.zero;
             moveDirection = Vector3.ClampMagnitude(moveDirection, 1); //Limits the vector magnitude to 1
-            anim.SetFloat("Speed", moveDirection.magnitude);
+            animator.SetFloat("Speed", moveDirection.magnitude);
 
             movIndicator.transform.localPosition = moveDirection; //Positionate the reference that indicates the direction of the movement
 
@@ -147,15 +156,15 @@ public class Player : MonoBehaviour
                 dashDir.y = -10f;
                 currentDashTime += Time.deltaTime;
 
-                charCont.Move(dashDir * Time.deltaTime * dashSpeed);
+                charController.Move(dashDir * Time.deltaTime * dashSpeed);
                 return;
             }
-            canDash = true;
+            // canDash = true;
 
             if (moveDirection.magnitude > 0) //Fixes the problem when there is no movement
             {
                 //To rotate the controller when moving and position it correctly relative to the camera
-                charCont.transform.rotation = new Quaternion(charCont.transform.rotation.x, cam.transform.rotation.y, charCont.transform.rotation.z, cam.transform.rotation.w);
+                charController.transform.rotation = new Quaternion(charController.transform.rotation.x, cam.transform.rotation.y, charController.transform.rotation.z, cam.transform.rotation.w);
 
                 //Smoothly rotate the character in the xz plane towards the direction of movement
                 Vector3 targetActPosition = new Vector3(movIndicator.transform.position.x, childPlayer.transform.position.y, movIndicator.transform.position.z);
@@ -179,9 +188,9 @@ public class Player : MonoBehaviour
             {
                 moveDirection.y = jumpSpeed;
                 canJump = false;
-                anim.SetFloat("SpeedY", moveDirection.y);
-                anim.Play("Falling");
-                anim.SetBool("Jump", true);
+                animator.SetFloat("SpeedY", moveDirection.y);
+                animator.Play("Falling");
+                animator.SetBool("Jump", true);
                 // soundMan.PlaySound("Jump");
             }
 
@@ -191,7 +200,7 @@ public class Player : MonoBehaviour
             if (currentDashTime < maxDashTime) //If player was dashing
             {
                 currentDashTime = maxDashTime;
-                canDash = true;
+                // canDash = true;
             }
             if (airControl)
             {
@@ -205,7 +214,7 @@ public class Player : MonoBehaviour
                 if (moveDirectionTemp.magnitude > 0) //Fixes the problem when there is no movement
                 {
                     //To rotate the controller when moving and position it correctly relative to the camera
-                    charCont.transform.rotation = new Quaternion(charCont.transform.rotation.x, cam.transform.rotation.y, charCont.transform.rotation.z, cam.transform.rotation.w);
+                    charController.transform.rotation = new Quaternion(charController.transform.rotation.x, cam.transform.rotation.y, charController.transform.rotation.z, cam.transform.rotation.w);
 
                     //Smoothly rotate the character in the xz plane towards the direction of movement
                     Vector3 targetActPosition = new Vector3(movIndicator.transform.position.x, childPlayer.transform.position.y, movIndicator.transform.position.z);
@@ -224,16 +233,16 @@ public class Player : MonoBehaviour
         moveDirection.y -= gravity * Time.deltaTime;
 
         // Move the controller
-        charCont.Move(moveDirection * Time.deltaTime);
+        charController.Move(moveDirection * Time.deltaTime);
 
         // Attack
         if (attackAction.WasPerformedThisFrame())
         {
             if (canMove)
             {
-                if (charCont.isGrounded && !IsDashing())
+                if (charController.isGrounded && !IsDashing())
                 {
-                    anim.Play("Attack01_SwordAndShiled");
+                    animator.Play("Attack01_SwordAndShiled");
                     // playerCont.soundMan.PlaySound("Attack");
                 }
             }
@@ -243,7 +252,7 @@ public class Player : MonoBehaviour
     public void AddImpact(Vector3 dir, float force) //Apply a force to the player
     {
         moveDirection = Vector3.zero;
-        anim.Play("Hit");
+        animator.Play("Hit");
 
         dir.Normalize();
         if (dir.y < 0) dir.y = -dir.y; //Reflect down force on the ground
@@ -258,7 +267,7 @@ public class Player : MonoBehaviour
             canMove = false;
             // soundMan.PlaySound("Hit");
             currentDashTime = maxDashTime; //Cancels dash if was pressed
-            anim.SetFloat("Speed", 0);
+            animator.SetFloat("Speed", 0);
             // anim.GetComponent<AnimatorEvents>().DisableWeaponColl();
             AddImpact(dir, force);
         }
@@ -296,6 +305,6 @@ public class Player : MonoBehaviour
 
     public bool IsAttacking()
     {
-        return anim.GetCurrentAnimatorStateInfo(0).IsName("Attack01_SwordAndShiled");
+        return animator.GetCurrentAnimatorStateInfo(0).IsName("Attack01_SwordAndShiled");
     }
 }

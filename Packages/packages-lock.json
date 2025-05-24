@@ -1,5 +1,23 @@
 {
   "dependencies": {
+    "com.nianticlabs.lightship": {
+      "version": "https://github.com/niantic-lightship/ardk-upm.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.editorcoroutines": "1.0.0",
+        "com.unity.xr.arfoundation": "5.1.4",
+        "com.unity.xr.arcore": "5.1.4",
+        "com.unity.xr.arkit": "5.1.4",
+        "com.unity.xr.openxr": "1.6.0",
+        "com.unity.xr.core-utils": "2.1.0",
+        "com.unity.xr.management": "4.0.1",
+        "com.unity.nuget.newtonsoft-json": "3.2.1",
+        "com.unity.cloud.draco": "5.1.4",
+        "com.unity.burst": "1.8.17"
+      },
+      "hash": "9aee7a18b12aa16a1b86277cdaa561bf7ad98ebd"
+    },
     "com.unity.ai.navigation": {
       "version": "2.0.7",
       "depth": 0,
@@ -11,11 +29,21 @@
     },
     "com.unity.burst": {
       "version": "1.8.21",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.2.1",
         "com.unity.modules.jsonserialize": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.cloud.draco": {
+      "version": "5.1.4",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.burst": "1.8.11",
+        "com.unity.mathematics": "1.3.1"
       },
       "url": "https://packages.unity.com"
     },
@@ -96,6 +124,13 @@
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.4",
       "depth": 3,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.2.1",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -238,6 +273,18 @@
         "com.unity.modules.particlesystem": "1.0.0",
         "com.unity.modules.unityanalytics": "1.0.0",
         "com.unity.modules.unitywebrequest": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.xr.arkit": {
+      "version": "6.0.5",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.xr.core-utils": "2.2.2",
+        "com.unity.xr.management": "4.4.0",
+        "com.unity.xr.arfoundation": "6.0.5",
+        "com.unity.editorcoroutines": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },

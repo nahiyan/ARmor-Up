@@ -11,8 +11,16 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/CombatScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 0
+    path: Assets/Scenes/PointCloudTest.unity
+    guid: 89a58dcbe729aac4c9dfcff4936f9dc3
+  - enabled: 0
+    path: Assets/Scenes/LightshipTest.unity
+    guid: 751b642a92983d545a99c3d33c2a8d48
   m_configObjects:
+    Niantic.Lightship.AR.LightshipSettings: {fileID: 11400000, guid: 94bbc04be6f4f35418e6266dd2d4adc1, type: 2}
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: f8d9881256782a1488cd65918451db24, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 96e71506da537a34ea38e3fea7408235, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: b97fd336c2680a8418ff4dd0558bad56, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: d2319ec083b8ef64e8fc8b67ad4eb5be, type: 2}

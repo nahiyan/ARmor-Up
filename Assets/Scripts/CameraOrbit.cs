@@ -78,8 +78,6 @@ public class CameraOrbit : MonoBehaviour
 		if (dist < 0.0f) dist = 0.0f;
 		// set the new position based off of the calculations above.
 		transform.position = ray.GetPoint(dist);
-
-		//////
 	}
 
 	//This code is in charge of controlling the limits of the camera up and down

@@ -1,28 +1,27 @@
 using UnityEngine;
-using UnityEngine.XR.ARFoundation;
-using UnityEngine.XR.ARSubsystems;
-using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.Assertions;
+using Unity.XR.CoreUtils;
 
 public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
-    private Player player;
+    private Player playerPrefab;
     [SerializeField]
-    private Enemy enemy;
+    private Enemy enemyPrefab;
     [SerializeField]
     private Camera camera;
 
-    private ARRaycastManager raycastManager;
-    private Player playerObject;
-    private Enemy enemyObject;
-    private static List<ARRaycastHit> hits = new List<ARRaycastHit>();
+    // private ARRaycastManager raycastManager;
+    private Player player;
+    private Enemy enemy;
+
+    // private static List<ARRaycastHit> hits = new List<ARRaycastHit>();
     InputAction clickAction;
 
     void Awake()
     {
-        raycastManager = FindFirstObjectByType<ARRaycastManager>();
+        // raycastManager = FindFirstObjectByType<ARRaycastManager>();
 
         clickAction = InputSystem.actions.FindAction("Point");
         Assert.IsNotNull(clickAction);
@@ -34,32 +33,54 @@ public class SpawnManager : MonoBehaviour
             return;
 
         bool touched = clickAction.WasPerformedThisFrame();
-        Vector2 touchVector = clickAction.ReadValue<Vector2>();
+        Vector2 touch = clickAction.ReadValue<Vector2>();
         if (!touched)
             return;
 
-        if (playerObject != null && enemyObject != null)
+        if (player != null && enemy != null)
             return;
 
-        if (raycastManager.Raycast(touchVector, hits, TrackableType.PlaneWithinPolygon))
+        Ray ray = camera.ScreenPointToRay(touch);
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            Pose hitPose = hits[0].pose;
-
             // Create the player
-            if (playerObject == null)
+            if (player == null)
             {
-                playerObject = Instantiate(player, hitPose.position, hitPose.rotation);
-                playerObject.GetComponent<Player>().cam = camera;
-                playerObject.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-                playerObject.speed *= 0.1f;
+                player = Instantiate(playerPrefab);
+                player.transform.position = hit.point;
+                // player.GetComponent<Player>().cam = camera;
+                player.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                player.speed *= 0.1f;
             }
-            else if (enemyObject == null)
+            else if (enemy == null)
             {
-                enemyObject = Instantiate(enemy, hitPose.position, hitPose.rotation);
-                Assert.IsNotNull(playerObject, "Player object null");
-                enemyObject.player = playerObject;
-                enemyObject.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                enemy = Instantiate(enemyPrefab);
+                enemy.transform.position = hit.point;
+                Assert.IsNotNull(player, "Player object null");
+                enemy.player = player;
+                enemy.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
             }
         }
+
+        // if (raycastManager.Raycast(touchVector, hits, TrackableType.PlaneWithinPolygon))
+        // {
+        //     Pose hitPose = hits[0].pose;
+
+        //     // Create the player
+        //     if (player == null)
+        //     {
+        //         player = Instantiate(playerPrefab, hitPose.position, hitPose.rotation);
+        //         player.GetComponent<Player>().cam = camera;
+        //         player.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+        //         player.speed *= 0.1f;
+        //     }
+        //     else if (enemy == null)
+        //     {
+        //         enemy = Instantiate(enemyPrefab, hitPose.position, hitPose.rotation);
+        //         Assert.IsNotNull(player, "Player object null");
+        //         enemy.player = player;
+        //         enemy.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+        //     }
+        // }
     }
 }

@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
     }
     public STATE currState = STATE.IDLE;
 
-    public List<GameObject> patrolPoints = new List<GameObject>();
+    public List<Transform> patrolPoints = new();
     int curPatrolIndex = -1; //The point of the patrol points where the enemy goes
 
     private float waitTimer = 0;
@@ -45,9 +45,8 @@ public class Enemy : MonoBehaviour
         Assert.IsNotNull(agent, "Navmesh Agent null");
         Assert.IsNotNull(anim, "Animator null");
         Assert.IsNotNull(coll, "Collision null");
-        // Assert.IsNotNull(player, "Player null");
 
-        if (patrolPoints.Count != 0) //Id there is patrol points
+        if (patrolPoints.Count != 0) // Id there is patrol points
             ChangeState(STATE.PATROL);
     }
 
@@ -194,8 +193,9 @@ public class Enemy : MonoBehaviour
                 float lastDist = Mathf.Infinity;
                 for (int i = 0; i < patrolPoints.Count; i++)
                 {
-                    GameObject thisWP = patrolPoints[i];
-                    float distance = Vector3.Distance(transform.position, thisWP.transform.position);
+                    Transform patrolPoint = patrolPoints[i];
+                    Assert.IsNotNull(patrolPoint);
+                    float distance = Vector3.Distance(transform.position, patrolPoint.position);
                     if (distance < lastDist)
                     {
                         curPatrolIndex = i - 1; //Because in the update it will be added one
@@ -265,7 +265,6 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Player" && IsAttacking())
         {
-            Debug.Log("Enemy attacking player! " + other.tag);
             other.GetComponent<Player>().ApplyDMG(other.transform.position - transform.position, 250f);
         }
     }

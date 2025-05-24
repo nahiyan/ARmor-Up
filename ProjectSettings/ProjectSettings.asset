@@ -82,7 +82,7 @@ PlayerSettings:
   androidApplicationEntry: 2
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
-  runInBackground: 0
+  runInBackground: 1
   muteOtherAudioSources: 0
   Prepare IOS For Recording: 0
   Force IOS Speakers When Recording: 0
@@ -143,6 +143,17 @@ PlayerSettings:
   bundleVersion: 0.1.0
   preloadedAssets:
   - {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  - {fileID: 4800000, guid: b02d09082cbc14569ae46c12d9836abc, type: 3}
+  - {fileID: 4800000, guid: 0f45334fa661448c886e4f99ba812a7e, type: 3}
+  - {fileID: 4800000, guid: f40a6c94c8e1b494d93d434ae522a14f, type: 3}
+  - {fileID: 11400000, guid: 94bbc04be6f4f35418e6266dd2d4adc1, type: 2}
+  - {fileID: 4800000, guid: b1d4c517492046e1a4e4cc49b0b73b42, type: 3}
+  - {fileID: 4800000, guid: 2b7e3540272684e0b8e12fed2c4609de, type: 3}
+  - {fileID: -4091953819078912972, guid: 1c4305125c562714287efa6eb7897954, type: 2}
+  - {fileID: 6024138176762301551, guid: d2319ec083b8ef64e8fc8b67ad4eb5be, type: 2}
+  - {fileID: 11400000, guid: b97fd336c2680a8418ff4dd0558bad56, type: 2}
+  - {fileID: 4800000, guid: c9f956787b1d945e7b36e0516201fc76, type: 3}
+  - {fileID: 4800000, guid: 0945859e5a1034c2cb6dce53cb4fb899, type: 3}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -817,7 +828,8 @@ PlayerSettings:
   webGLWebAssemblyBigInt: 0
   webGLCloseOnQuit: 0
   webWasm2023: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: NIANTIC_LIGHTSHIP_AR_LOADER_ENABLED;NIANTIC_ARDK_USE_FAST_LIGHTWEIGHT_PAM
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
