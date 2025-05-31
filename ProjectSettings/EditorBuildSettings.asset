@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/AR.unity
     guid: 3cc10bf5ee7612047b4aaec3d1a05f59
   - enabled: 0
-    path: Assets/Scenes/CombatScene.unity
+    path: Assets/Scenes/TestScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 0
     path: Assets/Scenes/PointCloudTest.unity

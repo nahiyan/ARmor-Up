@@ -14,17 +14,13 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private Camera camera;
 
-    // private ARRaycastManager raycastManager;
     private Player player;
     private Enemy enemy;
 
-    // private static List<ARRaycastHit> hits = new List<ARRaycastHit>();
     InputAction clickAction;
 
     void Awake()
     {
-        // raycastManager = FindFirstObjectByType<ARRaycastManager>();
-
         clickAction = InputSystem.actions.FindAction("Point");
         Assert.IsNotNull(clickAction);
     }
@@ -65,29 +61,7 @@ public class SpawnManager : MonoBehaviour
                 Assert.IsNotNull(player, "Player object null");
                 enemy.player = player;
                 enemy.navmesh = FindFirstObjectByType<LightshipNavMeshManager>().LightshipNavMesh;
-                enemy.GetComponent<Rigidbody>().useGravity = true;
             }
         }
-
-        // if (raycastManager.Raycast(touchVector, hits, TrackableType.PlaneWithinPolygon))
-        // {
-        //     Pose hitPose = hits[0].pose;
-
-        //     // Create the player
-        //     if (player == null)
-        //     {
-        //         player = Instantiate(playerPrefab, hitPose.position, hitPose.rotation);
-        //         player.GetComponent<Player>().cam = camera;
-        //         player.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-        //         player.speed *= 0.1f;
-        //     }
-        //     else if (enemy == null)
-        //     {
-        //         enemy = Instantiate(enemyPrefab, hitPose.position, hitPose.rotation);
-        //         Assert.IsNotNull(player, "Player object null");
-        //         enemy.player = player;
-        //         enemy.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-        //     }
-        // }
     }
 }

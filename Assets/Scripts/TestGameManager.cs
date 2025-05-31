@@ -1,6 +1,5 @@
-using System.Collections.Generic;
+using Niantic.Lightship.AR.NavigationMesh;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,19 +8,13 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Enemy enemyPrefab;
 
+    [SerializeField]
+    private Transform enemySpawnPoint;
+
     void Awake()
     {
-        // TODO: Fix obsolete code
-        // Enemy enemy = Instantiate(enemyPrefab, patrolPoints.transform);
-
-        // enemy.player = player;
-        // List<Transform> points = new();
-        // foreach (Transform child in patrolPoints.transform)
-        // {
-        //     Assert.IsNotNull(child);
-        //     points.Add(child);
-        // }
-        // enemy.patrolPoints = points;
-        // enemy.ChangeState(Enemy.STATE.PATROL);
+        Enemy enemy = Instantiate(enemyPrefab, enemySpawnPoint.position, enemySpawnPoint.rotation);
+        enemy.GetComponent<LightshipNavMeshAgent>().enabled = false;
+        enemy.player = player;
     }
 }

@@ -14,7 +14,6 @@ public class Weapon : MonoBehaviour
         Assert.IsNotNull(coll, "Collision is null");
     }
 
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Enemy")

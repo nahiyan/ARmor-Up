@@ -34,29 +34,21 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        try
-        {
-            agent = GetComponent<LightshipNavMeshAgent>();
-            anim = GetComponent<Animator>();
-            // animEv = this.GetComponentInChildren<AnimatorEventsEn>();
-            // soundMan = GetComponent<SoundManager>();
-            coll = GetComponent<CapsuleCollider>();
+        agent = GetComponent<LightshipNavMeshAgent>();
+        anim = GetComponent<Animator>();
+        // animEv = this.GetComponentInChildren<AnimatorEventsEn>();
+        // soundMan = GetComponent<SoundManager>();
+        coll = GetComponent<CapsuleCollider>();
 
-            Assert.IsNotNull(agent, "Navmesh Agent null");
-            Assert.IsNotNull(anim, "Animator null");
-            Assert.IsNotNull(coll, "Collision null");
-            Assert.IsNotNull(navmesh, "Navmesh null");
+        Assert.IsNotNull(agent, "Navmesh Agent null");
+        Assert.IsNotNull(anim, "Animator null");
+        Assert.IsNotNull(coll, "Collision null");
 
-            // TODO: Patrol by default
-            if (navmesh.IsOnNavMesh(transform.position, 1))
-            {
-                Debug.Log("Patrolling!");
-                ChangeState(STATE.PATROL);
-            }
-        }
-        catch (System.Exception ex)
+        // Patrol by default
+        if (navmesh != null && navmesh.IsOnNavMesh(transform.position, 1))
         {
-            Debug.LogError($"Exception in Enemy.Start: {ex}\n{ex.StackTrace}");
+            Debug.Log("Patrolling!");
+            ChangeState(STATE.PATROL);
         }
     }
 
@@ -75,6 +67,9 @@ public class Enemy : MonoBehaviour
                 }
                 break;
             case STATE.PATROL:
+                if (navmesh == null)
+                    break;
+
                 if (agent.State == AgentNavigationState.Idle)
                 {
                     navmesh.FindRandomPosition(transform.position, 30f, out Vector3 randomPos);
@@ -196,24 +191,10 @@ public class Enemy : MonoBehaviour
                 anim.SetTrigger("isIdle");
                 break;
             case STATE.PATROL:
+                if (navmesh == null)
+                    break;
                 navmesh.FindRandomPosition(transform.position, 30f, out Vector3 randomPos);
                 agent.SetDestination(randomPos);
-
-                // agent.speed = 2;
-                // agent.isStopped = false;
-
-                // float lastDist = Mathf.Infinity;
-                // for (int i = 0; i < patrolPoints.Count; i++)
-                // {
-                //     Transform patrolPoint = patrolPoints[i];
-                //     Assert.IsNotNull(patrolPoint);
-                //     float distance = Vector3.Distance(transform.position, patrolPoint.position);
-                //     if (distance < lastDist)
-                //     {
-                //         curPatrolIndex = i - 1; //Because in the update it will be added one
-                //         lastDist = distance;
-                //     }
-                // }
                 anim.SetTrigger("isPatrolling");
                 break;
             case STATE.CHASE:
