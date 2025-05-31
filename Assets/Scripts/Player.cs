@@ -43,8 +43,7 @@ public class Player : MonoBehaviour
     // Input controls
     InputAction attackAction, moveAction, jumpAction;
 
-    // TODO: Use Start instead of Awake
-    void Awake()
+    void Start()
     {
         charController = GetComponent<CharacterController>();
         Assert.IsNotNull(charController);
@@ -63,8 +62,6 @@ public class Player : MonoBehaviour
         Assert.IsNotNull(attackAction);
         Assert.IsNotNull(moveAction);
         Assert.IsNotNull(jumpAction);
-
-        Debug.Log("Played spawned.");
     }
 
     void Update()
