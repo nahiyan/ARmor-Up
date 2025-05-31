@@ -17,20 +17,19 @@ public class CameraOrbit : MonoBehaviour
 	private float y = .0f;
 	public bool zoom;
 	public float zoomSpeed = 120.0f;
-	private InputAction pointAction;
 
 	void Start()
 	{
-		// Cursor.lockState = CursorLockMode.Locked;
-		// Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
 
 		Vector3 angles = transform.eulerAngles;
 		x = angles.y;
 		y = angles.x;
+	}
 
-		pointAction = InputSystem.actions.FindAction("Point");
-		Assert.IsNotNull(pointAction);
-
+	void Update()
+	{
 		Sync();
 	}
 
@@ -39,18 +38,18 @@ public class CameraOrbit : MonoBehaviour
 		if (refCamera == null)
 			return;
 
-		Vector2 pointVector = pointAction.ReadValue<Vector2>();
+		Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
 		//Rotates the camera
-		x += (float)(pointVector.x * xSpeed * Time.deltaTime);
+		x += mouseDelta.x * xSpeed * Time.deltaTime;
 
 		if (zoom)
 		{
-			distance += (float)(pointVector.y);
+			distance += mouseDelta.y;
 		}
 		else
 		{
-			y -= (float)(pointVector.y * zoomSpeed * Time.deltaTime);
+			y -= mouseDelta.y * zoomSpeed * Time.deltaTime;
 		}
 		y = ClampAngle(y, yMinLimit, yMaxLimit);//This communicates with the function below and delimits the limits of the camera
 		Quaternion rotation = Quaternion.Euler(y, x, 0);
@@ -60,8 +59,8 @@ public class CameraOrbit : MonoBehaviour
 
 		//Here begins the code that is responsible for bringing the camera closer by detecting the wall
 		float dist = distance + 1.0f; // distance to the camera + 1.0 so the camera doesnt jump 1 unit in if it hits someting far out
-		Vector3 targetPosition = (refCamera.position + offsetCamera); // get the position the camera should be.
-		Ray ray = new Ray(targetPosition, transform.position - targetPosition);// get a ray in space from the target to the camera.
+		Vector3 targetPosition = refCamera.position + offsetCamera; // get the position the camera should be.
+		Ray ray = new(targetPosition, transform.position - targetPosition);// get a ray in space from the target to the camera.
 		RaycastHit hit;
 		// read from the taret to the targetPosition;
 		if (Physics.Raycast(ray, out hit, dist))
