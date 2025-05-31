@@ -50,10 +50,8 @@ public class Player : MonoBehaviour
         // soundMan = GetComponent<SoundManager>();
         animator = GetComponentInChildren<Animator>();
         Assert.IsNotNull(animator);
-        // agent = GetComponent<LightshipNavMeshAgent>();
         currentDashTime = maxDashTime;
         distToGround = charController.bounds.extents.y;
-        // navMesh = GameObject.FindFirstObjectByType<ARMeshManager>();
 
         attackAction = InputSystem.actions.FindAction("Attack");
         moveAction = InputSystem.actions.FindAction("Move");
@@ -66,8 +64,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        // Debug.Log(transform.position);
-
         if (charController.isGrounded)
         {
             if (!wasGrounded) //If it is the frame when player touches the ground
