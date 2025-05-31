@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour
     public STATE currState = STATE.IDLE;
 
     private float waitTimer = 0;
-    public float attackTime = 1.0f; //Time between attacks
+    public float attackTime = 10.0f; //Time between attacks
 
     private bool isInvincible = false;
 
