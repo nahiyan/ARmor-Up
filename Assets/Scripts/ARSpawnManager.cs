@@ -47,7 +47,7 @@ public class SpawnManager : MonoBehaviour
             if (player == null)
             {
                 player = Instantiate(playerPrefab);
-                player.transform.position = hit.point + new Vector3(0, 3f, 0);
+                player.transform.position = hit.point + new Vector3(0, 2f, 0);
                 // player.GetComponent<Player>().cam = camera;
                 player.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 player.speed *= 0.1f;
@@ -57,7 +57,7 @@ public class SpawnManager : MonoBehaviour
             else if (enemy == null)
             {
                 enemy = Instantiate(enemyPrefab);
-                enemy.transform.position = hit.point + new Vector3(0, 5f, 0);
+                enemy.transform.position = hit.point + new Vector3(0, 2f, 0);
                 enemy.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 Assert.IsNotNull(player, "Player object null");
                 enemy.player = player;
