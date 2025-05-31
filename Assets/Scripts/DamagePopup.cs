@@ -9,10 +9,10 @@ public class DamagePopup : MonoBehaviour
     private Transform playerTransform;
 
     private float dissapearTimer = 0.5f;
-    private float fadeOutSpeed = 5f;
-    private float moveYSpeed = 1f;
+    private float fadeOutSpeed = 3f;
+    private float moveYSpeed = 0.5f;
 
-	public void SetUp(int amount, Color textC)
+    public void SetUp(int amount, Color textC)
     {
         textMesh = GetComponent<TextMesh>();
         playerTransform = Camera.main.transform;
@@ -21,24 +21,23 @@ public class DamagePopup : MonoBehaviour
         textMesh.color = textColor;
     }
 
-	private void LateUpdate()
-	{
-        if (textMesh != null)
+    private void LateUpdate()
+    {
+        if (textMesh == null)
+            return;
+
+        transform.LookAt(2 * transform.position - playerTransform.position);
+        transform.position += new Vector3(0f, moveYSpeed * Time.deltaTime, 0f);
+
+        dissapearTimer -= Time.deltaTime;
+        if (dissapearTimer <= 0f)
         {
-            transform.LookAt(2 * transform.position - playerTransform.position);
-
-            transform.position += new Vector3(0f, moveYSpeed * Time.deltaTime, 0f);
-
-            dissapearTimer -= Time.deltaTime;
-            if (dissapearTimer <= 0f)
+            textColor.a -= fadeOutSpeed * Time.deltaTime;
+            textMesh.color = textColor;
+            if (textColor.a <= 0f)
             {
-                textColor.a -= fadeOutSpeed * Time.deltaTime;
-                textMesh.color = textColor;
-                if (textColor.a <= 0f)
-                {
-                    Destroy(gameObject);
-                }
+                Destroy(gameObject);
             }
         }
-	}
+    }
 }
