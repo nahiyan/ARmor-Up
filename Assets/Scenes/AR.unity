@@ -696,7 +696,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 8715962297256761393, guid: 9363d44b0fce8c44b88ac61d51707221, type: 3}
-  enemyPrefab: {fileID: 8839710874234212448, guid: 4295669a3c87d6b448bc0939dbfe325e, type: 3}
+  enemyPrefab: {fileID: 3731285247027683103, guid: cf2b1ec227854f74c893946503dfa1d1, type: 3}
   camera: {fileID: 581395542}
 --- !u!4 &742147965
 Transform:
