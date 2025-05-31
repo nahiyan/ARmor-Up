@@ -5,7 +5,10 @@ using static Niantic.Lightship.AR.NavigationMesh.LightshipNavMeshAgent;
 
 public class Enemy : MonoBehaviour
 {
-
+    [SerializeField]
+    private GameObject weapon;
+    [SerializeField]
+    private GameObject statusText;
     public LightshipNavMesh navmesh;
     private LightshipNavMeshAgent agent;
     Animator anim;
@@ -25,7 +28,7 @@ public class Enemy : MonoBehaviour
 
     float visDist = 10.0f; //Distance of vision
     float visAngle = 90.0f; //Angle of the cone vision
-    float meleeDist = 1.5f; //Distance from which the enemy will attack the player
+    float meleeDist = 0.5f; //Distance from which the enemy will attack the player
 
     public GameObject damageTextPrefab;
     public Transform damageTextPos;
@@ -43,6 +46,7 @@ public class Enemy : MonoBehaviour
         Assert.IsNotNull(agent, "Navmesh Agent null");
         Assert.IsNotNull(anim, "Animator null");
         Assert.IsNotNull(coll, "Collision null");
+        Assert.IsNotNull(statusText, "Status text null");
 
         // Patrol by default
         if (navmesh != null && navmesh.IsOnNavMesh(transform.position, 1))
@@ -54,6 +58,12 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        if (statusText != null && Camera.main != null)
+        {
+            statusText.transform.LookAt(Camera.main.transform);
+            statusText.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
+        }
+
         switch (currState)
         {
             case STATE.IDLE:
@@ -84,9 +94,6 @@ public class Enemy : MonoBehaviour
                 break;
             case STATE.CHASE:
                 agent.SetDestination(player.transform.position);
-                // TODO: Has path?
-                // if (agent.hasPath)
-                // {
                 if (CanAttackPlayer())
                 {
                     ChangeState(STATE.MELEEATTACK);
@@ -95,7 +102,6 @@ public class Enemy : MonoBehaviour
                 {
                     ChangeState(STATE.PATROL);
                 }
-                // }
                 break;
             case STATE.MELEEATTACK:
                 LookPlayer(2.0f);
@@ -133,23 +139,23 @@ public class Enemy : MonoBehaviour
 
     public bool CanSeePlayer()
     {
-        // Vector3 direction = player.transform.position - transform.position;
-        // float angle = Vector3.Angle(direction, transform.forward);
+        Vector3 direction = player.transform.position - transform.position;
+        float angle = Vector3.Angle(direction, transform.forward);
 
-        // if (direction.magnitude < visDist && angle < visAngle)
-        // {
-        //     return true;
-        // }
+        if (direction.magnitude < visDist && angle < visAngle)
+        {
+            return true;
+        }
         return false;
     }
 
     public bool CanAttackPlayer()
     {
-        // Vector3 direction = player.transform.position - transform.position;
-        // if (direction.magnitude < meleeDist)
-        // {
-        //     return true;
-        // }
+        Vector3 direction = player.transform.position - transform.position;
+        if (direction.magnitude < meleeDist)
+        {
+            return true;
+        }
         return false;
     }
 
@@ -165,6 +171,7 @@ public class Enemy : MonoBehaviour
 
     public void ChangeState(STATE newState)
     {
+        // Previous state
         switch (currState)
         {
             case STATE.IDLE:
@@ -180,11 +187,14 @@ public class Enemy : MonoBehaviour
                 anim.ResetTrigger("isMeleeAttacking");
                 // animEv.isAttacking = false;
                 // anim.GetComponent<AnimatorEventsEn>().DisableWeaponColl();
+                weapon.GetComponent<Collider>().enabled = false;
                 break;
             case STATE.HIT:
                 anim.ResetTrigger("isHited");
                 break;
         }
+
+        // New state
         switch (newState)
         {
             case STATE.IDLE:
@@ -198,25 +208,28 @@ public class Enemy : MonoBehaviour
                 anim.SetTrigger("isPatrolling");
                 break;
             case STATE.CHASE:
-                // TODO: Chase
+                // Chase
                 // agent.speed = 3;
                 // agent.isStopped = false;
                 anim.SetTrigger("isChasing");
                 break;
             case STATE.MELEEATTACK:
-                // TODO: Attack
-                // agent.isStopped = true;
+                // Attack
                 waitTimer = 0;
+                weapon.GetComponent<Collider>().enabled = true;
+                agent.StopMoving();
                 // animEv.isAttacking = true;
                 anim.SetTrigger("isMeleeAttacking");
                 break;
             case STATE.HIT:
-                // TODO: Hit
-                // agent.isStopped = true;
+                // Hit
+                agent.StopMoving();
                 waitTimer = 0;
                 anim.SetTrigger("isHited");
                 break;
         }
+
+        statusText.GetComponent<TextMesh>().text = newState.ToString() + " " + (IsAttacking() ? "attacking" : "");
 
         currState = newState;
     }
@@ -257,13 +270,5 @@ public class Enemy : MonoBehaviour
     public bool IsAttacking()
     {
         return anim.GetCurrentAnimatorStateInfo(0).IsName("Attack01");
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.tag == "Player" && IsAttacking())
-        {
-            other.GetComponent<Player>().ApplyDMG(other.transform.position - transform.position, 250f);
-        }
     }
 }
