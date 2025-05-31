@@ -52,11 +52,12 @@ public class SpawnManager : MonoBehaviour
                 player.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 player.speed *= 0.1f;
                 player.jumpSpeed = 5f;
+                player.GetComponent<CharacterController>().enabled = true;
             }
             else if (enemy == null)
             {
                 enemy = Instantiate(enemyPrefab);
-                enemy.transform.position = hit.point + new Vector3(0, 8f, 0);
+                enemy.transform.position = hit.point + new Vector3(0, 5f, 0);
                 enemy.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
                 Assert.IsNotNull(player, "Player object null");
                 enemy.player = player;

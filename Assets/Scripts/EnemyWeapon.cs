@@ -14,13 +14,13 @@ public class WeaponEnemy : MonoBehaviour
         coll = GetComponent<BoxCollider>();
     }
 
-	private void OnTriggerEnter(Collider other)
-	{
+    private void OnTriggerEnter(Collider other)
+    {
         if (other.tag == "Player")
         {
-            other.GetComponent<Player>().ApplyDMG(other.transform.position - transform.position, 250f);
+            other.GetComponent<Player>().ApplyDMG(other.transform.position - transform.position, 50f);
         }
-	}
+    }
 
     public void EnableColliders() //Called from the AnimatorEvent script
     {
